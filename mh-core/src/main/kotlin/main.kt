@@ -22,7 +22,7 @@ fun main() {
     val inputSkillIds = arrayOf(84, 142, 146, 147, 150)
     val inputSkills = skillActivation.values.flatten().filter { it.id in inputSkillIds }
 
-    val ans = search(Gender.MALE, equipments, inputSkills)
+    val list = filterList(Gender.MALE, equipments, inputSkills)
     println(inputSkills)
 }
 
@@ -63,15 +63,18 @@ fun computeWeight(userEquipment: UserEquipment, activationTable: Map<String, Int
     return weightMap.values.sum() + slotWeight
 }
 
-fun search(
+fun filterList(
     gender: Gender,
     equipments: List<List<Equipment>>,
-    inputSkill: List<SkillActivation>
-): List<UserEquipment> {
+    inputSkill: List<SkillActivation>,
+    limit:Int = topSizeEquipmentToSearch
+): List<List<UserEquipment>> {
     val skillKinds = inputSkill.map { it.kind }
     val filteredLst: ArrayList<List<UserEquipment>> = ArrayList()
     val activationTable = inputSkill.associateBy({ it.kind }, { it.pointsNeededToActivate })
+
     val totalPointsNeeded = activationTable.values.sum()
+
     equipments.forEach { all ->
         val filterPart = all.filter { equipment ->
             (equipment.gender == gender || equipment.gender == Gender.BOTH)
@@ -90,17 +93,8 @@ fun search(
     }
 
     for (i in 0 until filteredLst.size) {
-        filteredLst[i] = filteredLst[i].sortedByDescending { userEquipment -> userEquipment.equipmentWeight }.take(topSizeEquipmentToSearch)
+        filteredLst[i] = filteredLst[i].sortedByDescending { userEquipment -> userEquipment.equipmentWeight }.take(limit)
     }
 
-    filteredLst.forEach {
-        it.forEach {
-            println("${it.equipmentWeight}   ${it.equipment}")
-        }
-        println("----------------------")
-    }
-
-    println(totalPointsNeeded)
-
-    return emptyList()
+    return filteredLst
 }
