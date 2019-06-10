@@ -28,6 +28,7 @@ internal object CsvToModel {
         armorSkills.add(ArmorSkill(row[19], tryParseInt(row[20])))
         armorSkills.add(ArmorSkill(row[21], tryParseInt(row[22])))
         armorSkills.add(ArmorSkill(row[23], tryParseInt(row[24])))
+        armorSkills = armorSkills.filter { it.kind.isNotEmpty() && it.points > 0 }.toMutableList()
 
 
         var itemParts = mutableListOf<ItemPart>()
@@ -37,7 +38,9 @@ internal object CsvToModel {
         itemParts.add(ItemPart(row[31], tryParseInt(row[32])))
         itemParts = itemParts.filter { it.name.isNotEmpty() && it.amount > 0 }.toMutableList()
 
-        return Equipment(id).apply {
+
+        return Equipment().apply {
+            this.id = id
             this.name = name
             this.gender = gender
             this.classType = classType
@@ -63,7 +66,8 @@ internal object CsvToModel {
 
         val displayText = row[5]
 
-        return SkillActivationRequirement(id).apply {
+        return SkillActivationRequirement().apply {
+            this.id = id
             this.name = name
             this.kind = kind
             this.pointsNeededToActivate = pointsToActivate
@@ -107,7 +111,8 @@ internal object CsvToModel {
             itemParts.add(itemParts2)
         }
 
-        return Decoration(id).apply {
+        return Decoration().apply {
+            this.id = id
             this.name = name
             this.rarity = rarity
             this.slotsNeeded = slotsNeeded
@@ -125,10 +130,16 @@ internal object CsvToModel {
             getCharmPoints(skillkind, row1[2], row2[2], charmTypes[2]),
             getCharmPoints(skillkind, row1[3], row2[3], charmTypes[3]),
             getCharmPoints(skillkind, row1[4], row2[4], charmTypes[4]),
-            getCharmPoints(skillkind, row1[5], row2[5], charmTypes[5])).flatMap { it.asIterable() }
+            getCharmPoints(skillkind, row1[5], row2[5], charmTypes[5])
+        ).flatMap { it.asIterable() }
     }
 
-    private fun getCharmPoints(skillkind: String, skill1: String?, skill2: String?, charmType: String): List<CharmData> {
+    private fun getCharmPoints(
+        skillkind: String,
+        skill1: String?,
+        skill2: String?,
+        charmType: String
+    ): List<CharmData> {
         val charmDatas = mutableListOf<CharmData>()
         if (skill1 != null && !skill1.isEmpty()) {
             // skill is separated by ~

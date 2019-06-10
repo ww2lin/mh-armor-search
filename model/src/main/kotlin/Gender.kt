@@ -1,5 +1,6 @@
 enum class Gender {
     BOTH,
     MALE,
-    FEMALE
+    FEMALE,
+    UNKNOWN,
 }
