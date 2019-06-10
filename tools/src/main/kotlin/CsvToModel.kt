@@ -58,7 +58,7 @@ internal object CsvToModel {
         }
     }
 
-    fun csvSkillActivationRequirementRowToModel(row: Array<String>, id: Int): SkillActivationRequirement {
+    fun csvSkillActivationRequirementRowToModel(row: Array<String>, id: Int): SkillActivation {
         val name = row[0]
         val kind = row[1]
         val pointsToActivate = tryParseInt(row[2])
@@ -66,7 +66,7 @@ internal object CsvToModel {
 
         val displayText = row[5]
 
-        return SkillActivationRequirement().apply {
+        return SkillActivation().apply {
             this.id = id
             this.name = name
             this.kind = kind

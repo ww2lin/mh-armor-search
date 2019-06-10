@@ -25,9 +25,9 @@ class CsvReader {
         return lst
     }
 
-    fun getSkillActivationRequirementFromCsvFile(path: String): Map<String, List<SkillActivationRequirement>> {
+    fun getSkillActivationRequirementFromCsvFile(path: String): Map<String, List<SkillActivation>> {
         var reader = CSVReader(FileReader(path))
-        val skillActivationChart = LinkedHashMap<String, MutableList<SkillActivationRequirement>>()
+        val skillActivationChart = LinkedHashMap<String, MutableList<SkillActivation>>()
         var id = 1
         var nextLine: Array<String>
 

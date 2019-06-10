@@ -1,4 +1,4 @@
-data class SkillActivationRequirement(
+data class SkillActivation(
     var id: Int = 0,
     var name: String = "",
     var kind: String = "",
