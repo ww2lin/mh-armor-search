@@ -82,7 +82,7 @@ fun search(
         }.map { UserEquipment(it) }
         filteredLst.add(filterPart)
     }
-    
+
     filteredLst.forEach { userEquipments ->
         userEquipments.forEach { userEquipment ->
             userEquipment.equipmentWeight = computeWeight(userEquipment, activationTable)
