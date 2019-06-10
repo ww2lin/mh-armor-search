@@ -1,2 +1,3 @@
-rootProject.name = 'mh-armor-search'
+
+include ':model', ':tools', ':userinterface'
 
