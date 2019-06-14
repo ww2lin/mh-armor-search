@@ -1,3 +1,8 @@
+package model
+
+import ArmorSkill
+import Decoration
+import Equipment
 
 data class UserEquipment(val equipment: Equipment,
                          val decorations: List<Decoration> = ArrayList(),

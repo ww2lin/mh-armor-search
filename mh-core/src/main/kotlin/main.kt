@@ -1,7 +1,9 @@
+import model.EquipmentSet
+import model.UserEquipment
 import kotlin.math.max
 
-const val uninputskillWeight = 0.01f
-const val topSizeEquipmentToSearch = 5
+const val uninputskillWeight = 0.05f
+const val topSizeEquipmentToSearch = 3
 
 fun main() {
     val reader = CsvReader()
@@ -23,7 +25,48 @@ fun main() {
     val inputSkills = skillActivation.values.flatten().filter { it.id in inputSkillIds }
 
     val list = filterList(Gender.MALE, equipments, inputSkills)
+    val equipmentSets = getEquipmentSets(list)
     println(inputSkills)
+}
+
+fun applyDecorationAndFindCharm(equipmentSets: List<EquipmentSet>) {
+
+}
+
+fun findDecoration(equipmentSet: EquipmentSet) {
+    val userEquipments = equipmentSet.userEquipments
+
+}
+
+fun getEquipmentSets(
+    equipments: List<List<UserEquipment>>
+): List<EquipmentSet> {
+    val size = equipments.size
+    var previous = ArrayList<EquipmentSet>()
+    var result = ArrayList<EquipmentSet>()
+    // base case
+    equipments[0].forEach {
+        val lst = ArrayList<UserEquipment>()
+        lst.add(it)
+        previous.add(EquipmentSet(lst))
+    }
+
+    for (i in 1 until size) {
+        previous.forEach { previousEquipmentSet ->
+            equipments[i].forEach { equipmentSet ->
+                val copy = ArrayList(previousEquipmentSet.userEquipments)
+                copy.add(equipmentSet)
+                result.add(EquipmentSet(copy))
+            }
+        }
+        previous = ArrayList(result)
+        result.clear()
+    }
+
+    result = previous
+
+    println("${result.size} sets to be try $result")
+    return result
 }
 
 /**
@@ -53,8 +96,8 @@ fun computeWeight(userEquipment: UserEquipment, activationTable: Map<String, Int
         weightMap[kind] = points / max(1, totalPointsMap.getValue(kind))
     }
 
-    val slots = userEquipment.getSlots()
-    val slotWeight = when(slots) {
+    // TODO: calculate weight based on the decorations
+    val slotWeight = when (val slots = userEquipment.getSlots()) {
         3 -> slots / 5f
         2 -> slots / 7f
         else -> slots / 10f
@@ -67,7 +110,7 @@ fun filterList(
     gender: Gender,
     equipments: List<List<Equipment>>,
     inputSkill: List<SkillActivation>,
-    limit:Int = topSizeEquipmentToSearch
+    limit: Int = topSizeEquipmentToSearch
 ): List<List<UserEquipment>> {
     val skillKinds = inputSkill.map { it.kind }
     val filteredLst: ArrayList<List<UserEquipment>> = ArrayList()
@@ -93,7 +136,15 @@ fun filterList(
     }
 
     for (i in 0 until filteredLst.size) {
-        filteredLst[i] = filteredLst[i].sortedByDescending { userEquipment -> userEquipment.equipmentWeight }.take(limit)
+        filteredLst[i] =
+            filteredLst[i].sortedByDescending { userEquipment -> userEquipment.equipmentWeight }.take(limit)
+    }
+
+    filteredLst.forEach {
+        it.forEach {
+            println("${it.equipmentWeight}  $it")
+        }
+        println("--------------------------")
     }
 
     return filteredLst
